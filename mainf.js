@@ -95,7 +95,7 @@ function Shoot(x,y){
   this.height = 20;
   this.move = false;
   this.img = new Image();
-  this.img.src = "assets/burbujas.png";
+  this.img.src = "assets/burbuja.png";
     this.img.onload = function(){
       this.draw();
     }.bind(this);
@@ -135,7 +135,7 @@ function Shark() {
 	this.height = 59;
 	this.num = 1;
 	this.img = new Image();
-		this.img.src = "assets/tiburon.png";
+		this.img.src = "assets/tiburo.png";
 		this.img.onload = function() {
 			this.draw();
 		}.bind(this);
@@ -169,7 +169,7 @@ function Crock() {
 	this.height = 55;
 	this.num = 1;
 	this.img = new Image();
-		this.img.src = "assets/cocodrilo.png";
+		this.img.src = "assets/cocodril.png";
 		this.img.onload = function() {
 			this.draw();
 		}.bind(this);
@@ -203,7 +203,7 @@ function Beachball() {
 	this.height = 59;
 	this.num = 1;
 	this.img = new Image();
-		this.img.src = "assets/pelota.png";
+		this.img.src = "assets/pelot.png";
 		this.img.onload = function() {
 			this.draw();
 		}.bind(this);
@@ -237,7 +237,7 @@ function Rubberdoc() {
 	this.height = 59;
 	this.num = 0;
 	this.img = new Image();
-		this.img.src = "assets/patohule.png";
+		this.img.src = "assets/patohul.png";
 		this.img.onload = function() {
 			this.draw();
 		}.bind(this);
