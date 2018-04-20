@@ -69,8 +69,11 @@ function SwimmingBoyF() {
 		ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
 		//esto es una validacion
 		if(this.y < 0 || this.y > canvas.height - this.height) {
-			gameOver();
-					}
+			this.lives--;
+			if(!swimmingBoyF.lives) {
+				gameOver();
+			}
+		}
 	};
 	this.move =function() {
 		this.y -= 30;
@@ -265,6 +268,7 @@ var framesF = 0; //cuantas veces se ejecuta
 
 //auxiliar functions
 function gameOver() {
+	drawLives();
 	stop();
 	ctx.font = "120px courier";
 	ctx.strokeStyle = "orange";
@@ -276,15 +280,15 @@ function gameOver() {
 }
 
 function drawScore() {
-	ctx.font = "40px Arial";
+	ctx.font = "30px Arial";
 	ctx.fillStyle = "blue";
 	ctx.fillText("Score: "+boardF.score, 8, 40);
 }
 
 function drawLives() {
-	ctx.font = "40px Arial";
+	ctx.font = "30px Arial";
 	ctx.fillStyle = "blue";
-	ctx.fillText("Lives: "+boardF.score, 8, 20);	
+	ctx.fillText("Lives: "+swimmingBoyF.lives, 190, 40);	
 }
 
 //main function
@@ -295,8 +299,9 @@ function updateF() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	boardF.draw();
 	drawScore();
+	drawLives();
 	swimmingBoyF.draw();
-	console.log(swimmingBoyF.y);
+	//console.log(swimmingBoyF.lives);
 	shark.draw();
 	crock.draw();
 	beachBall.draw();
@@ -307,33 +312,44 @@ function updateF() {
     evils.forEach((evil, indexP) => {
       if(bullet.isTouching(evil)){
         bullets.splice(indexB,1);
-        console.log(evil);
+        console.log(evil.name);
 		//console.log("its evil");
 		evils[indexP].num--;
         if (evils[indexP].num<=0){
           evils[indexP].redraw();
           boardF.score+=1;
-        }
+        
+		
+		}
       }
       if(swimmingBoyF.isTouching(evil)){
         //bullets.splice(indexB,1);
 		  if(evil.name === "shark" || evil.name === "crock"){
 			 //console.log("Sati touch un malo D= " + evil.name);
-			  
+			  swimmingBoyF.lives--;
+			  console.log(swimmingBoyF.lives);
+				if(!swimmingBoyF.lives) {
+					gameOver();
+//				}else{
+//					clearInterval(intervaloF);
+				}
 		  }else if(evil.name === "beachball" || evil.name === "rubberduck"){
-			 console.log("Sati touch un bueno :D " + evil.name);
+			 //console.log("Sati touch un bueno :D " + evil.name);
+			  swimmingBoyF.score++;
 		  }
-        //evils[indexP].num--;
-        if(evils[indexP].num<=0){
-          evils[indexP].redraw();
-          boardF.score+=1;
-        }
+		  //evils[indexP].num--;
+		  if(evils[indexP].num<=0){
+			  evils[indexP].redraw();
+			  boardF.score+=1;
+		  }
       }
 		
     });
     bullet.move = true;
   });
+//requestAnimationFrame(updateF)
 }
+
 
 function startF() {
 	if(intervaloF > 0) return
@@ -350,6 +366,16 @@ function stop() {
 	clearInterval(intervaloF);
 	intervaloF = 0;
 	//board.music.pause();
+}
+
+function randomColor() {
+	var letters = "0123456789ABCDEF";
+	var color = "#";
+	
+	for(var i = 0; i<6; i++) {
+		color += letters[Math.floor(Math.random()*16)];
+	}
+	return color;
 }
 
 //listeners (escuchadores/ observadores)
