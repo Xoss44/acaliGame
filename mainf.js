@@ -9,12 +9,14 @@ var shark = new Shark();
 var crock = new Crock();
 var beachBall = new Beachball();
 var rubberDock = new Rubberdoc();
+var acaliLogo = new AcaliLogo();
 
 var shoot = new Shoot(swimmingBoyF.x,swimmingBoyF.y);
 var evils =[shark, crock, beachBall, rubberDock];
 var bullets = [];
 
 var score = 0;
+var paused = false;
 
 //classes
 function BoardF() {
@@ -25,8 +27,8 @@ function BoardF() {
 	this.img = new Image();
 	this.img.src = "assets/piscinalateral.png";
 	this.score = 0;
-	//this.music = new Audio();
-	//this.music.src = ""
+	this.music = new Audio();
+	this.music.src = "assets/3ShowGame.mp3";
 	
 	//llama al metodo draw cuando la imagen ya cargó
 	this.img.onload = function() {
@@ -46,7 +48,7 @@ function BoardF() {
 		ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
 		ctx.drawImage(this.img, this.x + canvas.width, this.y, this.width, this.height);
 	};
-}//end of boardf
+}//end of boardFf
 
 
 //SwimmingBoyF
@@ -229,7 +231,7 @@ function Beachball() {
 
 function Rubberdoc() {
 	this.name = "rubberduck"
-	this.x = canvas.width + Math.floor(Math.random() * 120);; //+ widthRandom
+	this.x = canvas.width + Math.floor(Math.random() * 120); //+ widthRandom
 	this.y = Math.floor(Math.random() * 330)+120;
 	this.width = 59;
 	this.height = 59;
@@ -255,6 +257,40 @@ function Rubberdoc() {
 	this.redraw = function(){
 		var randomX = Math.floor(Math.random() * 800);
 		var randomY = Math.floor(Math.random() * 330)+120;
+		this.x = canvas.width + randomX;
+		this.y = randomY;
+	};
+	};
+}
+
+function AcaliLogo() {
+	this.name = "AcaliLogo"
+	this.x = canvas.width + Math.floor(Math.random() * 120); //+ widthRandom
+	this.y = 5;
+	this.width = 230;
+	this.height = 80;
+	this.num = 0;
+	this.img = new Image();
+		this.img.src = "assets/logolistoVector.png";
+		this.img.onload = function() {
+			this.draw();
+		}.bind(this);
+	this.move = function() {
+		this.x -= 1.5;
+	};
+	this.draw = function() {
+		this.move();
+		ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+		//pinta los numeros
+		if(this.x < 0) {
+			var randomX = Math.floor(Math.random() * 800);
+			var randomY = 5;
+			this.x = canvas.width + randomX;
+			this.y = randomY;
+		}
+	this.redraw = function(){
+		var randomX = Math.floor(Math.random() * 800);
+		var randomY = 5;
 		this.x = canvas.width + randomX;
 		this.y = randomY;
 	};
@@ -302,6 +338,7 @@ function updateF() {
 	drawLives();
 	swimmingBoyF.draw();
 	//console.log(swimmingBoyF.lives);
+	acaliLogo.draw();
 	shark.draw();
 	crock.draw();
 	beachBall.draw();
@@ -317,8 +354,11 @@ function updateF() {
 		evils[indexP].num--;
         if (evils[indexP].num<=0){
           evils[indexP].redraw();
-          boardF.score+=1;
-        
+		if(evil.name === "shark" || evil.name === "crock"){
+			boardF.score+=1;
+		}else if(evil.name === "beachball" || evil.name === "rubberduck"){
+			boardF.score-=2;
+		} 
 		
 		}
       }
@@ -359,13 +399,14 @@ function startF() {
 	}, 1000/60);
 	swimmingBoyF.y = 120;
 	framesF = 0;
-	//board.music.play();
+	boardF.music.play();
+	
 }
 
 function stop() {
 	clearInterval(intervaloF);
 	intervaloF = 0;
-	//board.music.pause();
+	boardF.music.pause();
 }
 
 function randomColor() {
@@ -379,7 +420,25 @@ function randomColor() {
 }
 
 //listeners (escuchadores/ observadores)
+document.getElementById("pauseButton").addEventListener("click", function(){
+	//console.log(paused)
+	if(paused === true) {
+		intervaloF = setInterval(function(){
+			updateF();
+		}, 1000/60);
+		paused = false;
+	}else{
+		stop();
+		paused = true;
+	}
+});
+
+document.getElementById("startButton").addEventListener("click", function(){
+		startF();												
+});
+
 addEventListener("keydown", function(e) {
+	e.preventDefault();
 	if(e.keyCode === 32) {
 		swimmingBoyF.move();
 	}
@@ -387,6 +446,19 @@ addEventListener("keydown", function(e) {
 		startF();
 	}
 	if(e.keyCode === 13){
+	e.preventDefault();
     createShoots();
    }
+	if(e.keyCode === 80){
+	if(paused === true) {
+		intervaloF = setInterval(function(){
+			updateF();
+		}, 1000/60);
+		paused = false;
+	}else{
+		stop();
+		paused = true;
+	}
+   }
+
 });
